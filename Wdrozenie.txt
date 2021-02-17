@@ -1,0 +1,29 @@
+Na samym początku trzeba sie zalogowac do usługi azure na konto z odpowiednimi uprawnieniami za pomoca komendy 
+>az login
+
+Nasza aplikacja bedzie nazywała sie notatnik-tekstowy-desmond
+
+Następnie trzeba utworzyć bazę danych do trzymania danych aplikacji 
+>az postgres up --resource-group DjangoPostgres-tutorial-rg --location westus2 --server-name notatnik-tekstowy-desmond --database-name notesdb --admin-user desmond123 --admin-password Radek2334& --ssl-enforcement Enabled
+
+Wysyłamy naszą aplikacje do Azure App Service
+>az webapp up --resource-group DjangoPostgres-tutorial-rg --location westus2 --plan DjangoPostgres-tutorial-plan --name notatnik-tekstowy-desmond
+
+Teraz ustawiamy zmienne zeby podłączyć aplikacje do bazy danych
+>az webapp config appsettings set --settings DBHOST="notatnik-tekstowy-desmond" DBNAME="notesdb" DBUSER="desmond123" DBPASS="Radek2334&"
+
+Przechodzimy z lokalnego terminala do terminala w sesji SSH pod adresem https://notatnik-tekstowy-desmond.scm.azurewebsites.net/webssh/host i uzywamy naszych danych logowania do konta azure
+
+Wpisujemy tam ponizsze komendy.
+cd $APP_PATH
+
+source /antenv/bin/activate
+
+pip install -r requirements.txt
+
+python manage.py migrate
+
+python manage.py createsuperuser
+
+Bedziemy proszeni o podanie loginu i hasła uzywanego do tworzenia nowych notatek(ja uzylem 'root' i 'Notesdb1')
+
